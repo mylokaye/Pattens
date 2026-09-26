@@ -14,12 +14,10 @@ import {
   type CampaignValues,
   type LinkValues,
   type SurveyValues,
-  type TrackingType,
 } from "./core";
 
 const emptyLink: LinkValues = {
   baseUrl: "http://google.com",
-  trackingTypes: ["MTM"],
   source: "",
   medium: "",
   campaign: "",
@@ -91,14 +89,8 @@ export function GeneratorWorkspace() {
     if (mode === "campaign") setCampaign(emptyCampaign);
     if (mode === "survey") setSurvey(emptySurvey);
   };
-  const linkSet = (key: Exclude<keyof LinkValues, "trackingTypes" | "dynamicsNoCache" | "simple" | "tradeshow">, value: string) =>
+  const linkSet = (key: Exclude<keyof LinkValues, "dynamicsNoCache" | "simple" | "tradeshow">, value: string) =>
     setLink((current) => ({ ...current, [key]: value }));
-  const toggleTrackingType = (type: TrackingType) =>
-    setLink((current) => {
-      const selected = current.trackingTypes.includes(type);
-      if (selected && current.trackingTypes.length === 1) return current;
-      return { ...current, trackingTypes: selected ? current.trackingTypes.filter((candidate) => candidate !== type) : [...current.trackingTypes, type] };
-    });
   const setLinkUrl = (value: string) => {
     urlValidationRequest.current += 1;
     setUrlValidation("idle");
@@ -191,20 +183,6 @@ export function GeneratorWorkspace() {
                   />
                 </div>
                 <div className="flex gap-2 sm:col-span-2">
-                  {(["MTM", "UTM"] as TrackingType[]).map((type) => (
-                    <Button
-                      key={type}
-                      type="button"
-                      size="sm"
-                      variant={
-                        link.trackingTypes.includes(type) ? "default" : "secondary"
-                      }
-                      onClick={() => toggleTrackingType(type)}
-                      aria-pressed={link.trackingTypes.includes(type)}
-                    >
-                      {type}
-                    </Button>
-                  ))}
                   <span className="flex-1" aria-hidden="true" />
                   <Button
                     type="button"

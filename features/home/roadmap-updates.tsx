@@ -9,6 +9,12 @@ import type { RoadmapResponse } from '@/features/home/roadmap-data';
 
 const emptyData: RoadmapResponse = { items: [], sourceName: 'Microsoft 365 Roadmap', sourceUrl: '', refreshedAt: 0 };
 const statusOptions = ['In development', 'Rolling out', 'Launched'];
+const productOptions = [
+  'Dynamics 365 Contact Center',
+  'Dynamics 365 Customer Service',
+  'Dynamics 365 Finance',
+  'Dynamics 365 Project Operations',
+];
 
 function displayDate(timestamp: number) {
   return new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium' }).format(new Date(timestamp));
@@ -17,6 +23,7 @@ function displayDate(timestamp: number) {
 export function RoadmapUpdates({ initialData }: { initialData: RoadmapResponse | null }) {
   const [data, setData] = useState<RoadmapResponse>(initialData ?? emptyData);
   const [status, setStatus] = useState('');
+  const [products, setProducts] = useState<string[]>(productOptions);
   const [loading, setLoading] = useState(!initialData);
   const [error, setError] = useState('');
 
@@ -45,10 +52,22 @@ export function RoadmapUpdates({ initialData }: { initialData: RoadmapResponse |
     void load();
   }, [initialData]);
 
-  const visibleItems = useMemo(() => data.items.filter((item) => !status || item.status === status).slice(0, 3), [data.items, status]);
+  const visibleItems = useMemo(
+    () => data.items
+      .filter((item) => !status || item.status === status)
+      .filter((item) => item.categories.some((category) => products.includes(category)))
+      .slice(0, 3),
+    [data.items, status, products],
+  );
+  const allProductsSelected = products.length === productOptions.length;
+  const productFilterLabel = allProductsSelected
+    ? 'All products'
+    : products.length === 0
+      ? 'No products'
+      : `${products.length} products`;
 
   return (
-    <Card>
+    <Card className="overflow-visible">
       <CardHeader className="border-b">
         <div className="flex min-w-0 items-center gap-2">
           <Sparkles className="size-4 shrink-0 text-muted-foreground" />
@@ -62,6 +81,28 @@ export function RoadmapUpdates({ initialData }: { initialData: RoadmapResponse |
             <option value="">All statuses</option>
             {statusOptions.map((option) => <option key={option} value={option}>{option}</option>)}
           </select>
+          <details className="group relative">
+            <summary className="flex h-8 cursor-pointer list-none items-center rounded-[10px] border border-input bg-background px-3 text-[13px] leading-4 font-medium outline-none focus-visible:ring-3 focus-visible:ring-ring/50 [&::-webkit-details-marker]:hidden">
+              {productFilterLabel}
+            </summary>
+            <div className="absolute right-0 z-20 mt-1 grid w-[min(34rem,calc(100vw-2rem))] grid-cols-1 gap-x-4 gap-y-1 rounded-xl border bg-white p-3 text-neutral-900 shadow-lg dark:bg-neutral-900 dark:text-neutral-100 sm:grid-cols-2">
+              {productOptions.map((product, index) => (
+                <label key={product} htmlFor={`roadmap-product-${index}`} className="flex min-h-9 cursor-pointer items-center gap-2 rounded-md px-2 text-sm hover:bg-accent">
+                  <input
+                    id={`roadmap-product-${index}`}
+                    type="checkbox"
+                    aria-label={product}
+                    checked={products.includes(product)}
+                    onChange={() => setProducts((current) => current.includes(product)
+                      ? current.filter((item) => item !== product)
+                      : [...current, product])}
+                    className="size-4 accent-primary"
+                  />
+                  <span>{product}</span>
+                </label>
+              ))}
+            </div>
+          </details>
           <Button type="button" variant="secondary" size="sm" onClick={() => void load()} disabled={loading}><RefreshCw data-icon="inline-start" className={loading ? 'animate-spin' : undefined} />Refresh</Button>
         </div>
       </CardHeader>

@@ -1,6 +1,4 @@
-export type TrackingType = 'MTM' | 'UTM';
-
-export type LinkValues = { baseUrl: string; trackingTypes: TrackingType[]; source: string; medium: string; campaign: string; content: string; term: string; dynamicsNoCache: boolean; simple: boolean; tradeshow: boolean; };
+export type LinkValues = { baseUrl: string; source: string; medium: string; campaign: string; content: string; term: string; dynamicsNoCache: boolean; simple: boolean; tradeshow: boolean; };
 export type CampaignValues = { business: string; year: string; region: string; descriptor: string; salesplay: string; language: string; };
 export type SurveyValues = { baseUrl: string; lang: string; journey: string; lob: string; campaign: string; medium: string; content: string; };
 
@@ -16,12 +14,8 @@ export function buildLinkUrl(values: LinkValues) {
   const basePath = url.pathname.replace(/\/+$/g, '');
   const isDynamicsMarketingUrl = isDynamicsUrl(url);
   url.pathname = (isDynamicsMarketingUrl ? basePath : `${basePath}/`).replace(/\/{2,}/g, '/'); url.search = '';
-  const trackingTypes = (['MTM', 'UTM'] as TrackingType[]).filter((type) => values.trackingTypes.includes(type));
-  (trackingTypes.length ? trackingTypes : ['MTM']).forEach((type) => {
-    const prefix = type === 'UTM' ? 'utm' : 'mtm';
-    ([[`${prefix}_source`, values.source], [`${prefix}_medium`, values.medium], [`${prefix}_campaign`, values.campaign], [`${prefix}_content`, values.content], [`${prefix}_term`, values.term]] as const).forEach(([key, value]) => { const normalized = value.trim().toUpperCase(); if (normalized) url.searchParams.set(key, normalized); });
-  });
-  if (values.tradeshow) url.searchParams.set('mtm_medium', 'tradeshow');
+  ([[`utm_source`, values.source], [`utm_medium`, values.medium], [`utm_campaign`, values.campaign], [`utm_content`, values.content], [`utm_term`, values.term]] as const).forEach(([key, value]) => { const normalized = value.trim().toUpperCase(); if (normalized) url.searchParams.set(key, normalized); });
+  if (values.tradeshow) url.searchParams.set('utm_medium', 'tradeshow');
   const generated = url.toString();
   const flags = [values.simple ? 'simple' : '', isDynamicsMarketingUrl && values.dynamicsNoCache ? 'd365mkt-nocache' : ''].filter(Boolean);
   return flags.length ? `${generated}${url.search ? '&' : '?'}${flags.join('&')}` : generated;
