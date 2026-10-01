@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://pattens.tech'),
+  metadataBase: new URL('https://pattens.mylokaye.me'),
   title: 'Pattens',
   description: 'A browser-first workspace for campaign operations.',
   manifest: '/site.webmanifest',
