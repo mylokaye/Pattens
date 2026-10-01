@@ -1,4 +1,4 @@
-![Pattens web app banner](docs/assets/pattens-banner.jpg)
+![Pattens web app](docs/assets/pattens-app-banner.jpg)
 
 # Pattens
 
