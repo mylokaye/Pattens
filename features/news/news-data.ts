@@ -2,7 +2,7 @@ export type Source = { id: number; name: string };
 export type NewsItem = { id: number; sourceId: number; sourceName: string; sourceUrl: string; title: string; summary: string; url: string; publishedAt: number };
 export type NewsResponse = { items: NewsItem[]; sources: Source[]; refreshedAt: number };
 
-const upstreamOrigin = (process.env.PATTENS_LOCAL_API_ORIGIN || 'https://pattens.tech').replace(/\/$/, '');
+const upstreamOrigin = (process.env.PATTENS_LOCAL_API_ORIGIN || 'https://pattens.mylokaye.me').replace(/\/$/, '');
 const BLOG_FEEDS = [
   { id: -1, name: 'Meghan', sourceUrl: 'https://meganvwalker.com/', feedUrl: 'https://meganvwalker.com/feed' },
   { id: -2, name: 'Amey Holden', sourceUrl: 'https://www.ameyholden.com/articles/', feedUrl: 'https://www.ameyholden.com/articles?format=rss' },
