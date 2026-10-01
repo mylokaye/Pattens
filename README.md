@@ -112,4 +112,4 @@ Simulation sends the supplied proposal, selected audience, duration, and fixed p
 
 ## Hosted site
 
-[pattens-email-tools.v6pdwnhvws.chatgpt.site](https://pattens-email-tools.v6pdwnhvws.chatgpt.site)
+[pattens.mylokaye.me](https://pattens.mylokaye.me)
