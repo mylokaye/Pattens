@@ -17,7 +17,7 @@ export function buildLinkUrl(values: LinkValues) {
   ([[`utm_source`, values.source], [`utm_medium`, values.medium], [`utm_campaign`, values.campaign], [`utm_content`, values.content], [`utm_term`, values.term]] as const).forEach(([key, value]) => { const normalized = value.trim().toUpperCase(); if (normalized) url.searchParams.set(key, normalized); });
   if (values.tradeshow) url.searchParams.set('utm_medium', 'tradeshow');
   const generated = url.toString();
-  const flags = [values.simple ? 'simple' : '', isDynamicsMarketingUrl && values.dynamicsNoCache ? 'd365mkt-nocache' : ''].filter(Boolean);
+  const flags = [values.simple ? 'basic' : '', isDynamicsMarketingUrl && values.dynamicsNoCache ? 'd365mkt-nocache' : ''].filter(Boolean);
   return flags.length ? `${generated}${url.search ? '&' : '?'}${flags.join('&')}` : generated;
 }
 export function buildHighlightUrl(baseGeneratedUrl: string, highlightText: string) { const text = highlightText.trim().replace(/\s+/g, ' '); if (!text) return ''; try { const url = new URL(baseGeneratedUrl); url.hash = ''; return `${url.toString()}#:~:text=${encodeURIComponent(text)}`; } catch { return ''; } }
