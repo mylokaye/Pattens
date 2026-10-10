@@ -191,7 +191,7 @@ export function GeneratorWorkspace() {
                     onClick={() => setLink((current) => ({ ...current, simple: !current.simple }))}
                     aria-pressed={link.simple}
                   >
-                    Simple
+                    Basic
                   </Button>
                   <Button
                     type="button"
