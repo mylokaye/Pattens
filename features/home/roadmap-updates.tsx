@@ -11,6 +11,7 @@ const emptyData: RoadmapResponse = { items: [], sourceName: 'Microsoft 365 Roadm
 const statusOptions = ['In development', 'Rolling out', 'Launched'];
 const productOptions = [
   'Dynamics 365 Contact Center',
+  'Dynamics 365 Customer Insights - Data',
   'Dynamics 365 Customer Service',
   'Dynamics 365 Finance',
   'Dynamics 365 Project Operations',
