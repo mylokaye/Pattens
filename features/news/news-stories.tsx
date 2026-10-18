@@ -21,12 +21,6 @@ function displayDate(timestamp: number) {
   return new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium' }).format(new Date(timestamp));
 }
 
-function displayTitle(title: string, shouldClip: boolean) {
-  if (!shouldClip) return title;
-  const words = title.trim().split(/\s+/);
-  return words.length > 6 ? `${words.slice(0, 6).join(' ')}...` : title;
-}
-
 export function NewsStories({ initialData, limit, sourceFilterLabels, sourceFilterGroups, title, description, showSourceFilter = false }: NewsStoriesProps) {
   const [data, setData] = useState<NewsResponse>(initialData ?? { items: [], sources: [], refreshedAt: 0 });
   const [selectedSource, setSelectedSource] = useState('');
@@ -97,7 +91,7 @@ export function NewsStories({ initialData, limit, sourceFilterLabels, sourceFilt
             {visibleItems.map((item) => (
               <Card key={item.id} size="sm" className="h-full bg-background/45 transition-colors hover:bg-muted/40">
                 <CardContent className="flex h-full flex-col gap-4 p-4">
-                  <a href={item.url} target="_blank" rel="noreferrer" className="group flex flex-1 flex-col gap-2"><h2 className="text-base font-semibold leading-6 group-hover:text-primary">{displayTitle(item.title, typeof limit === 'number')}{' '}<ExternalLink className="ml-1.5 inline size-3.5" /></h2>{item.summary && <p className="line-clamp-4 text-sm leading-6 text-muted-foreground">{item.summary}</p>}</a>
+                  <a href={item.url} target="_blank" rel="noreferrer" className="group flex flex-1 flex-col gap-2"><h3 className="text-base font-semibold leading-6 group-hover:text-primary">{item.title}{' '}<ExternalLink className="ml-1.5 inline size-3.5" /></h3>{item.summary && <p className="line-clamp-4 text-sm leading-6 text-muted-foreground">{item.summary}</p>}</a>
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground"><a href={item.sourceUrl} target="_blank" rel="noreferrer" className="font-medium text-foreground hover:underline">{item.sourceName}</a><span aria-hidden="true">·</span><span>{displayDate(item.publishedAt)}</span></div>
                 </CardContent>
               </Card>

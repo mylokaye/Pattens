@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { CheckCircle2, Command as CommandIcon, House, Link2, MessagesSquare, PanelsTopLeft, Sparkles, Sun, WandSparkles } from 'lucide-react';
 import { Button } from './ui/button';
@@ -34,6 +34,7 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
 
 function WorkspaceContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const { setOpenMobile } = useSidebar();
   const [appearance, setAppearance] = useState<Appearance>('glass');
   const [commandOpen, setCommandOpen] = useState(false);
@@ -61,6 +62,7 @@ function WorkspaceContent({ children }: { children: React.ReactNode }) {
   };
 
   return <>
+    <a href="#workspace-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-card focus:p-3 focus:text-foreground">Skip to content</a>
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <SidebarMenu>
@@ -87,10 +89,10 @@ function WorkspaceContent({ children }: { children: React.ReactNode }) {
         <div className="flex items-center gap-2"><SidebarTrigger /><span className="text-sm font-medium md:hidden">Pattens</span></div>
         <div className="flex items-center gap-1"><Button variant="ghost" size="sm" className="border-0 px-3 shadow-none" onClick={() => setCommandOpen(true)} aria-label="Open command menu"><CommandIcon className="h-4 w-4" /><span className="hidden sm:inline">Commands</span><kbd className="ml-1 hidden rounded px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground md:inline">⌘ K</kbd></Button><div className="flex items-center rounded-[10px] border border-border/70 bg-background/60 p-0.5" role="group" aria-label="Appearance">{appearanceOptions.map(({ value, label, icon: Icon }) => <Button key={value} variant="ghost" size="icon" className="rounded-[10px] border-0 shadow-none aria-pressed:bg-background aria-pressed:shadow-sm" onClick={() => applyAppearance(value)} aria-label={label} aria-pressed={appearance === value}><Icon className="h-3.5 w-3.5" /></Button>)}</div></div>
       </header>
-      <div className="mx-auto flex w-full max-w-[1600px] flex-1"><div className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8">{children}</div></div>
+      <div className="mx-auto flex w-full max-w-[1600px] flex-1"><div id="workspace-content" tabIndex={-1} className="min-w-0 flex-1 scroll-mt-20 px-4 py-6 sm:px-6 lg:px-8"><h1 className="sr-only">{active.label}</h1>{children}</div></div>
       <footer className="w-full"><Separator /><div className="mx-auto flex min-h-16 max-w-[1600px] items-center justify-center px-4 text-center text-xs text-muted-foreground sm:px-6 lg:px-8"><p>Copyright 2026</p></div></footer>
     </SidebarInset>
-    <CommandDialog open={commandOpen} onOpenChange={setCommandOpen} title="Command menu" description="Navigate between Pattens tools."><Command><CommandInput placeholder="Search tools..." /><CommandList><CommandEmpty>No matching tool.</CommandEmpty><CommandGroup heading="Go to tool">{tools.map(({ href, label, icon: Icon }) => <CommandItem key={href} value={label} onSelect={() => setCommandOpen(false)}><Link href={href} className="flex w-full items-center gap-3"><Icon className="h-4 w-4" />{label}</Link></CommandItem>)}</CommandGroup></CommandList></Command></CommandDialog>
+    <CommandDialog open={commandOpen} onOpenChange={setCommandOpen} title="Command menu" description="Navigate between Pattens tools."><Command><CommandInput placeholder="Search tools..." /><CommandList><CommandEmpty>No matching tool.</CommandEmpty><CommandGroup heading="Go to tool">{tools.map(({ href, label, icon: Icon }) => <CommandItem key={href} value={label} onSelect={() => { setCommandOpen(false); setOpenMobile(false); router.push(href); }}><Icon className="h-4 w-4" />{label}</CommandItem>)}</CommandGroup></CommandList></Command></CommandDialog>
     <Toaster />
   </>;
 }

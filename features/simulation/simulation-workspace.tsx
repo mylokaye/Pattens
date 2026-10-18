@@ -22,9 +22,9 @@ const personas: Record<Audience, Persona[]> = {
 
 const tone = { Positive: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300', Mixed: 'bg-amber-500/15 text-amber-700 dark:text-amber-300', Critical: 'bg-red-500/15 text-red-700 dark:text-red-300' };
 const durationOptions = [
-  { rounds: 1, label: '1 hour' },
-  { rounds: 6, label: '6 hours' },
-  { rounds: 24, label: '24 hours' },
+  { rounds: 1, label: '1 round' },
+  { rounds: 6, label: '6 rounds' },
+  { rounds: 24, label: '24 rounds' },
 ];
 
 export function SimulationWorkspace() {
@@ -57,13 +57,13 @@ export function SimulationWorkspace() {
 
   return <div className="grid gap-6 xl:grid-cols-[minmax(340px,0.8fr)_minmax(0,1.2fr)] xl:items-start">
     <Card>
-      <CardHeader className="border-b"><CardTitle>Proposal</CardTitle></CardHeader>
+      <CardHeader className="border-b"><CardTitle id="proposal-heading">Proposal</CardTitle></CardHeader>
       <CardContent className="grid gap-5 pt-5">
-        <Textarea value={proposal} onChange={(event) => { setProposal(event.target.value); setError(''); }} placeholder="Describe the proposal you want to test with an audience." className="min-h-36 resize-y" maxLength={3000} />
+        <Textarea aria-labelledby="proposal-heading" aria-describedby="simulation-description" value={proposal} onChange={(event) => { setProposal(event.target.value); setError(''); }} placeholder="Describe the proposal you want to test with an audience." className="min-h-36 resize-y" maxLength={3000} />
         <div className="grid gap-4">
           <fieldset className="grid gap-2" disabled={running}>
-            <legend className="text-sm font-medium">Duration</legend>
-            <div className="grid grid-cols-3 gap-2" role="group" aria-label="Duration">
+            <legend className="text-sm font-medium">Rounds</legend>
+            <div className="grid grid-cols-3 gap-2" role="group" aria-label="Rounds">
               {durationOptions.map((option) => <Button key={option.rounds} type="button" variant={rounds === option.rounds ? 'secondary' : 'outline'} className="min-w-0 px-2" aria-pressed={rounds === option.rounds} onClick={() => { setRounds(option.rounds); reset(); }}>{option.label}</Button>)}
             </div>
           </fieldset>
@@ -74,6 +74,7 @@ export function SimulationWorkspace() {
             </div>
           </fieldset>
         </div>
+        <p id="simulation-description" className="text-sm text-muted-foreground">Synthetic personas explore your proposal over the selected rounds. Responses are a scenario exercise, not audience research or a forecast.</p>
         <div className="flex gap-3"><Button type="button" onClick={() => void run()} disabled={running} className="flex-1"><Play className="h-4 w-4" />{running ? `Running ${events.length}/${rounds}` : 'Run'}</Button><Button type="button" variant="secondary" onClick={reset} disabled={running}><RotateCcw className="h-4 w-4" />Reset</Button></div>
       </CardContent>
     </Card>

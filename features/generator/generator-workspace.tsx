@@ -119,9 +119,12 @@ export function GeneratorWorkspace() {
   return (
     <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
         <Card>
-          <CardHeader className="border-b"><CardTitle>Generate</CardTitle><div
-              className="flex flex-wrap gap-2 sm:col-span-2"
-              role="tablist"
+          <CardHeader className="border-b"><CardTitle>Generate</CardTitle>
+            <select aria-label="Generator type" value={mode} onChange={(event) => setMode(event.target.value as typeof mode)} className="h-8 max-w-36 rounded-lg border border-input bg-background px-3 text-sm focus-visible:outline-2 focus-visible:outline-ring @min-[360px]/card-header:hidden">
+              <option value="link">URL</option><option value="campaign">Campaign</option><option value="survey">Survey</option>
+            </select><div
+              className="hidden gap-2 @min-[360px]/card-header:flex"
+              role="group"
               aria-label="Generator type"
             >
               {(["link", "campaign", "survey"] as const).map((item) => (
@@ -130,8 +133,7 @@ export function GeneratorWorkspace() {
                   type="button"
                   variant={mode === item ? "default" : "secondary"}
                   size="sm"
-                  role="tab"
-                  aria-selected={mode === item}
+                  aria-pressed={mode === item}
                   onClick={() => setMode(item)}
                   className="h-8 px-3"
                 >
@@ -319,7 +321,7 @@ export function GeneratorWorkspace() {
               </Button>
               {mode === "link" && output && (
                 <a
-                  className="inline-flex h-8 items-center justify-center gap-2 rounded-[10px] bg-secondary px-3 text-[13px] leading-4 font-medium text-secondary-foreground transition-colors hover:bg-secondary/80"
+                  className="inline-flex h-[50px] items-center justify-center gap-2 rounded-[10px] bg-secondary px-3 text-[13px] leading-4 font-medium text-secondary-foreground transition-colors hover:bg-secondary/80"
                   href={output}
                   target="_blank"
                   rel="noreferrer"

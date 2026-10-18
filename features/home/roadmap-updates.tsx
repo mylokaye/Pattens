@@ -73,20 +73,24 @@ export function RoadmapUpdates({ initialData }: { initialData: RoadmapResponse |
         <div className="flex min-w-0 items-center gap-2">
           <Sparkles className="size-4 shrink-0 text-muted-foreground" />
           <div className="min-w-0">
-            <CardTitle>Microsoft 365 roadmap</CardTitle>
+            <CardTitle><span className="sm:hidden">Roadmap</span><span className="hidden sm:inline">Microsoft 365 roadmap</span></CardTitle>
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-2">
+        <Button type="button" variant="secondary" size="sm" onClick={() => void load()} disabled={loading}><RefreshCw data-icon="inline-start" className={loading ? 'animate-spin' : undefined} />Refresh</Button>
+      </CardHeader>
+
+      <CardContent className="grid gap-4 p-4">
+        <div className="relative flex flex-wrap items-center gap-4">
           <label className="sr-only" htmlFor="roadmap-status">Filter roadmap updates</label>
           <select id="roadmap-status" value={status} onChange={(event) => setStatus(event.target.value)} className="h-8 min-w-36 rounded-[10px] border border-input bg-background px-3 text-[13px] leading-4 font-medium outline-none focus-visible:ring-3 focus-visible:ring-ring/50">
             <option value="">All statuses</option>
             {statusOptions.map((option) => <option key={option} value={option}>{option}</option>)}
           </select>
-          <details className="group relative">
+          <details className="group">
             <summary className="flex h-8 cursor-pointer list-none items-center rounded-[10px] border border-input bg-background px-3 text-[13px] leading-4 font-medium outline-none focus-visible:ring-3 focus-visible:ring-ring/50 [&::-webkit-details-marker]:hidden">
               {productFilterLabel}
             </summary>
-            <div className="absolute right-0 z-20 mt-1 grid w-[min(34rem,calc(100vw-2rem))] grid-cols-1 gap-x-4 gap-y-1 rounded-xl border bg-white p-3 text-neutral-900 shadow-lg dark:bg-neutral-900 dark:text-neutral-100 sm:grid-cols-2">
+            <div className="absolute left-0 z-20 mt-1 grid w-full max-w-[34rem] grid-cols-1 gap-x-4 gap-y-1 rounded-xl border bg-white p-3 text-neutral-900 shadow-lg dark:bg-neutral-900 dark:text-neutral-100 sm:grid-cols-2">
               {productOptions.map((product, index) => (
                 <label key={product} htmlFor={`roadmap-product-${index}`} className="flex min-h-9 cursor-pointer items-center gap-2 rounded-md px-2 text-sm hover:bg-accent">
                   <input
@@ -104,16 +108,12 @@ export function RoadmapUpdates({ initialData }: { initialData: RoadmapResponse |
               ))}
             </div>
           </details>
-          <Button type="button" variant="secondary" size="sm" onClick={() => void load()} disabled={loading}><RefreshCw data-icon="inline-start" className={loading ? 'animate-spin' : undefined} />Refresh</Button>
         </div>
-      </CardHeader>
-
-      <CardContent className="p-4">
         {error && <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive" role="alert">{error}</div>}
         {loading && <div className="flex min-h-40 items-center justify-center text-sm text-muted-foreground">Refreshing the Microsoft 365 roadmap…</div>}
         {!loading && !error && visibleItems.length === 0 && <div className="flex min-h-40 items-center justify-center rounded-lg border border-dashed px-4 py-10 text-center text-sm text-muted-foreground">No roadmap updates match this filter.</div>}
         {!loading && !error && visibleItems.length > 0 && <div className="grid gap-4 md:grid-cols-3">
-          {visibleItems.map((item) => <Card key={item.id} size="sm" className="h-full bg-background/45 transition-colors hover:bg-muted/40"><CardContent className="flex h-full flex-col gap-4 p-4"><a href={item.url} target="_blank" rel="noreferrer" className="group flex flex-1 flex-col gap-2"><h2 className="text-base font-semibold leading-6 group-hover:text-primary">{item.title}<ExternalLink className="ml-1.5 inline size-3.5" /></h2><p className="line-clamp-4 text-sm leading-6 text-muted-foreground">{item.summary}</p></a><div className="flex items-center justify-between gap-3"><Badge>{item.status || 'Roadmap update'}</Badge><span className="text-right text-xs text-muted-foreground">{displayDate(item.updatedAt)}</span></div></CardContent></Card>)}
+          {visibleItems.map((item) => <Card key={item.id} size="sm" className="h-full bg-background/45 transition-colors hover:bg-muted/40"><CardContent className="flex h-full flex-col gap-4 p-4"><a href={item.url} target="_blank" rel="noreferrer" className="group flex flex-1 flex-col gap-2"><h3 className="text-base font-semibold leading-6 group-hover:text-primary">{item.title}<ExternalLink className="ml-1.5 inline size-3.5" /></h3><p className="line-clamp-4 text-sm leading-6 text-muted-foreground">{item.summary}</p></a><div className="flex items-center justify-between gap-3"><Badge>{item.status || 'Roadmap update'}</Badge><span className="text-right text-xs text-muted-foreground">{displayDate(item.updatedAt)}</span></div></CardContent></Card>)}
         </div>}
       </CardContent>
     </Card>

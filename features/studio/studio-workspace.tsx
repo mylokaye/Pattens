@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useId, useEffect, useRef, useState } from 'react';
 import { Download, RotateCcw, Upload } from 'lucide-react';
 import * as THREE from 'three';
 import { Button } from '@/components/ui/button';
@@ -201,6 +201,7 @@ export function StudioWorkspace() {
   const [source, setSource] = useState('');
   const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [exporting, setExporting] = useState(false);
+  const [exportScale, setExportScale] = useState(1);
   const [exportStatus, setExportStatus] = useState('');
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -397,7 +398,8 @@ export function StudioWorkspace() {
       <CardHeader className="border-b">
         <CardTitle>Preview</CardTitle>
         <div className="flex items-center gap-2">
-          {[1, 2, 3].map((multiplier) => <Button key={multiplier} type="button" size="sm" className="h-8 px-2" onClick={() => download(multiplier)} disabled={!source || exporting}><Download data-icon="inline-start" />{exporting ? 'Exporting…' : `${multiplier}x PNG`}</Button>)}
+          <select aria-label="PNG export scale" value={exportScale} onChange={(event) => setExportScale(Number(event.target.value))} disabled={exporting} className="h-8 rounded-lg border border-input bg-background px-2 text-sm focus-visible:outline-2 focus-visible:outline-ring">{[1, 2, 3].map((scale) => <option key={scale} value={scale}>{scale}x</option>)}</select>
+          <Button type="button" size="sm" className="h-8 px-2" onClick={() => download(exportScale)} disabled={!source || exporting} aria-label="Export PNG"><Download data-icon="inline-start" />{exporting ? 'Exporting…' : 'PNG'}</Button>
         </div>
       </CardHeader>
       <CardContent className="grid gap-4 pt-4">
@@ -415,9 +417,10 @@ function ControlRange({ label, value, min, max, suffix, onChange }: { label: str
 }
 
 function CameraControl({ label, value, min, max, step = 1, format, onChange, stacked = false }: { label: string; value: number; min: number; max: number; step?: number; format: (value: number) => string; onChange: (value: number) => void; stacked?: boolean }) {
-  const slider = <input className="h-[50px] w-full cursor-ew-resize accent-primary" type="range" min={min} max={max} step={step} value={value} onChange={(event) => onChange(Number(event.target.value))} />;
-  if (stacked) return <label className="grid gap-0 text-sm font-medium"><span className="flex items-center justify-between gap-2"><span>{label}</span><output className="font-mono text-xs font-normal text-muted-foreground">{format(value)}</output></span>{slider}</label>;
-  return <label className="grid grid-cols-[minmax(5.5rem,auto)_minmax(0,1fr)_3.75rem] items-center gap-2"><span className="min-w-0 truncate text-xs font-medium uppercase tracking-[0.14em]">{label}</span>{slider}<output className="flex h-[50px] items-center justify-end rounded-lg bg-secondary/60 px-2 font-mono text-sm text-muted-foreground">{format(value)}</output></label>;
+  const id = useId();
+  const slider = <input id={id} className="h-[50px] w-full cursor-ew-resize accent-primary" type="range" min={min} max={max} step={step} value={value} onChange={(event) => onChange(Number(event.target.value))} />;
+  if (stacked) return <label htmlFor={id} className="grid gap-0 text-sm font-medium"><span className="flex items-center justify-between gap-2"><span>{label}</span><span aria-hidden="true" className="font-mono text-xs font-normal text-muted-foreground">{format(value)}</span></span>{slider}</label>;
+  return <label htmlFor={id} className="grid grid-cols-[minmax(5.5rem,auto)_minmax(0,1fr)_3.75rem] items-center gap-2"><span className="min-w-0 truncate text-xs font-medium uppercase tracking-[0.14em]">{label}</span>{slider}<span aria-hidden="true" className="flex h-[50px] items-center justify-end rounded-lg bg-secondary/60 px-2 font-mono text-sm text-muted-foreground">{format(value)}</span></label>;
 }
 
 function ColorControl({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
