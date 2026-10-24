@@ -10,11 +10,10 @@ import type { RoadmapResponse } from '@/features/home/roadmap-data';
 const emptyData: RoadmapResponse = { items: [], sourceName: 'Microsoft 365 Roadmap', sourceUrl: '', refreshedAt: 0 };
 const statusOptions = ['In development', 'Rolling out', 'Launched'];
 const productOptions = [
-  'Dynamics 365 Contact Center',
-  'Dynamics 365 Customer Insights - Data',
-  'Dynamics 365 Customer Service',
-  'Dynamics 365 Finance',
-  'Dynamics 365 Project Operations',
+  {
+    label: 'Dynamics 365 Customer Insights',
+    categories: ['Dynamics 365 Customer Insights', 'Dynamics 365 Customer Insights - Data'],
+  },
 ];
 
 function displayDate(timestamp: number) {
@@ -24,7 +23,7 @@ function displayDate(timestamp: number) {
 export function RoadmapUpdates({ initialData }: { initialData: RoadmapResponse | null }) {
   const [data, setData] = useState<RoadmapResponse>(initialData ?? emptyData);
   const [status, setStatus] = useState('');
-  const [products, setProducts] = useState<string[]>(productOptions);
+  const [products, setProducts] = useState<string[]>(productOptions.map((product) => product.label));
   const [loading, setLoading] = useState(!initialData);
   const [error, setError] = useState('');
 
@@ -56,16 +55,12 @@ export function RoadmapUpdates({ initialData }: { initialData: RoadmapResponse |
   const visibleItems = useMemo(
     () => data.items
       .filter((item) => !status || item.status === status)
-      .filter((item) => item.categories.some((category) => products.includes(category)))
+      .filter((item) => productOptions.some((product) => products.includes(product.label)
+        && item.categories.some((category) => product.categories.includes(category))))
       .slice(0, 3),
     [data.items, status, products],
   );
-  const allProductsSelected = products.length === productOptions.length;
-  const productFilterLabel = allProductsSelected
-    ? 'All products'
-    : products.length === 0
-      ? 'No products'
-      : `${products.length} products`;
+  const productFilterLabel = products.length === 0 ? 'No products' : 'Customer Insights';
 
   return (
     <Card className="overflow-visible">
@@ -90,20 +85,20 @@ export function RoadmapUpdates({ initialData }: { initialData: RoadmapResponse |
             <summary className="flex h-8 cursor-pointer list-none items-center rounded-[10px] border border-input bg-background px-3 text-[13px] leading-4 font-medium outline-none focus-visible:ring-3 focus-visible:ring-ring/50 [&::-webkit-details-marker]:hidden">
               {productFilterLabel}
             </summary>
-            <div className="absolute left-0 z-20 mt-1 grid w-full max-w-[34rem] grid-cols-1 gap-x-4 gap-y-1 rounded-xl border bg-white p-3 text-neutral-900 shadow-lg dark:bg-neutral-900 dark:text-neutral-100 sm:grid-cols-2">
+            <div className="absolute left-0 z-20 mt-1 grid w-full max-w-[24rem] grid-cols-1 gap-x-4 gap-y-1 rounded-xl border bg-white p-3 text-neutral-900 shadow-lg dark:bg-neutral-900 dark:text-neutral-100">
               {productOptions.map((product, index) => (
-                <label key={product} htmlFor={`roadmap-product-${index}`} className="flex min-h-9 cursor-pointer items-center gap-2 rounded-md px-2 text-sm hover:bg-accent">
+                <label key={product.label} htmlFor={`roadmap-product-${index}`} className="flex min-h-11 cursor-pointer items-center gap-2 rounded-md px-2 text-sm hover:bg-accent">
                   <input
                     id={`roadmap-product-${index}`}
                     type="checkbox"
-                    aria-label={product}
-                    checked={products.includes(product)}
-                    onChange={() => setProducts((current) => current.includes(product)
-                      ? current.filter((item) => item !== product)
-                      : [...current, product])}
+                    aria-label={product.label}
+                    checked={products.includes(product.label)}
+                    onChange={() => setProducts((current) => current.includes(product.label)
+                      ? current.filter((item) => item !== product.label)
+                      : [...current, product.label])}
                     className="size-4 accent-primary"
                   />
-                  <span>{product}</span>
+                  <span>{product.label}</span>
                 </label>
               ))}
             </div>
