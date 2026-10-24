@@ -7,9 +7,6 @@ import { RoadmapUpdates } from '@/features/home/roadmap-updates';
 
 export function HomeWorkspace({ initialNews, initialRoadmap }: { initialNews: NewsResponse | null; initialRoadmap: RoadmapResponse | null }) {
   return (
-    <div className="flex flex-col gap-6">
-      <RoadmapUpdates initialData={initialRoadmap} />
-      <NewsStories initialData={initialNews} limit={6} sourceFilterGroups={[{ id: 'dynamics', label: 'Dynamics', sourceNames: ['Microsoft Dynamics'] }, { id: 'blogs', label: 'Blogs', sourceNames: ['Meghan', 'Amey Holden'] }]} title="Latest news" showSourceFilter />
-    </div>
+    <NewsStories initialData={initialNews} limit={6} sourceFilterGroups={[{ id: 'dynamics', label: 'Dynamics', sourceNames: ['Microsoft Dynamics'] }, { id: 'blogs', label: 'Blogs', sourceNames: ['Meghan', 'Amey Holden'] }]} topSection={<RoadmapUpdates initialData={initialRoadmap} />} title="Latest news" showSourceFilter />
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { ExternalLink, RefreshCw, Rss } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,6 +12,7 @@ type NewsStoriesProps = {
   limit?: number;
   sourceFilterLabels?: Record<string, string>;
   sourceFilterGroups?: { id: string; label: string; sourceNames: string[] }[];
+  topSection?: ReactNode;
   title: string;
   description?: string;
   showSourceFilter?: boolean;
@@ -21,7 +22,7 @@ function displayDate(timestamp: number) {
   return new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium' }).format(new Date(timestamp));
 }
 
-export function NewsStories({ initialData, limit, sourceFilterLabels, sourceFilterGroups, title, description, showSourceFilter = false }: NewsStoriesProps) {
+export function NewsStories({ initialData, limit, sourceFilterLabels, sourceFilterGroups, topSection, title, description, showSourceFilter = false }: NewsStoriesProps) {
   const [data, setData] = useState<NewsResponse>(initialData ?? { items: [], sources: [], refreshedAt: 0 });
   const [selectedSource, setSelectedSource] = useState('');
   const [loading, setLoading] = useState(true);
@@ -67,6 +68,8 @@ export function NewsStories({ initialData, limit, sourceFilterLabels, sourceFilt
           {description && <CardDescription className="mt-1">{description}</CardDescription>}
         </div>
       </CardHeader>
+
+      {topSection}
 
       {showSourceFilter && (
         <div className="flex flex-wrap items-center justify-between gap-3 border-b px-4 py-3">
