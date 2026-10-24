@@ -12,7 +12,11 @@ const statusOptions = ['In development', 'Rolling out', 'Launched'];
 const productOptions = [
   {
     label: 'Dynamics 365 Customer Insights',
-    categories: ['Dynamics 365 Customer Insights', 'Dynamics 365 Customer Insights - Data'],
+    categories: [
+      'Dynamics 365 Customer Insights',
+      'Dynamics 365 Customer Insights - Data',
+      'Dynamics 365 Customer Insights - Journeys',
+    ],
   },
 ];
 
